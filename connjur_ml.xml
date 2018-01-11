@@ -107,8 +107,7 @@
     	<xs:complexType>
         	<xs:sequence>
             	<xs:element name="computationalLineageReferenceRepositoryIndentiferType" type="xs:string"/>
-            <xs:element
-                name="computationalLineageReferenceRepositoryIndentiferValue" type="xs:string"/>
+            	<xs:element name="computationalLineageReferenceRepositoryIndentiferValue" type="xs:string"/>
         </xs:sequence>
     </xs:complexType>
 </xs:element>
@@ -123,5 +122,6 @@
         </xs:sequence>
     </xs:complexType>
 </xs:element>
-
+	    </xs:sequence>
+	</xs:complexType>
 </xs:schema>
