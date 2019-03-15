@@ -1,0 +1,38 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<CONNJUR_ML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="file:connjur_ml_1.1.xsd">
+    <spectrum>
+        <ID>myExample</ID>
+        <format>
+            <formatName>NMRPipe</formatName>
+        </format>
+		<axes>2</axes>
+        <axis>
+            <ID>axis_1</ID>
+            <points>1024</points>
+            <dwell units="Hz">8510.64</dwell>
+            <acquisitionMax units="msec">120.3</acquisitionMax>
+            <label>1H</label>
+            <frequency>599.56</frequency>
+            <domain>time</domain>
+            <decoupledNucleus>13C</decoupledNucleus>
+            <decoupledNucleus>15N</decoupledNucleus>
+            <quadrature>
+                <type>Complex</type>
+                <sign>Varian</sign>
+            </quadrature>
+        </axis>
+        <axis>
+            <ID>axis_2</ID>
+            <points>128</points>
+            <dwell units="Hz">3000.08</dwell>
+            <label>13C</label>
+            <frequency>150.76</frequency>
+            <domain>time</domain>
+            <decoupledNucleus>1H</decoupledNucleus>
+            <quadrature>
+                <type>States-TPPI</type>
+            </quadrature>
+        </axis>
+    </spectrum>
+</CONNJUR_ML>
