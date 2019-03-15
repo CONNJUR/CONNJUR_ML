@@ -1,0 +1,89 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<CONNJUR_ML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:connjur_ml_1.1.xsd">
+    <spectrum>
+        <ID>myExample</ID>
+        <format>
+            <formatName>Varian</formatName>
+        </format>
+		<axes>2</axes>
+        <axis>
+            <ID>axis_1</ID>
+            <dimension>dim_1</dimension>
+            <points>1024</points>
+            <domain>time</domain>
+        </axis>
+        <axis>
+            <ID>axis_2</ID>
+            <dimension>dim_2</dimension>
+            <dimension>dim_3</dimension>
+            <points>128</points>
+            <domain>time</domain>
+        </axis>
+    </spectrum>
+    <spectrometer>
+        <ID type="local">my600</ID>
+        <ID type="global">UCHC_INOVA_600_1</ID>
+        <vendor>Varian</vendor>
+        <class>INOVA</class>
+        <fieldStrength>600</fieldStrength>
+        <organization>UCHC</organization>
+		<channels>4</channels>
+        <channel>
+            <ID>channel_1</ID>
+            <nucleus>1H</nucleus>
+            <frequency units="MHz">599.56</frequency>
+        </channel>
+        <channel>
+            <ID>channel_4</ID>
+            <nucleus>2H</nucleus>
+            <frequency units="MHz">92.27</frequency>
+        </channel>
+        <channel>
+            <ID>channel_2</ID>
+            <nucleus>13C</nucleus>
+            <frequency units="MHz">150.76</frequency>
+        </channel>
+        <channel>
+            <ID>channel_3</ID>
+            <nucleus>15N</nucleus>
+            <frequency units="MHz">60.76</frequency>
+        </channel>
+        <date>2000-03-20</date>
+    </spectrometer>
+    <spectralEvent>
+		<pulseSequence>gCNhsqc</pulseSequence>
+        <dimensions>3</dimensions>
+        <spectralEventDimension>
+            <ID>dim_1</ID>
+            <spectrometerChannel>channel_1</spectrometerChannel>
+            <dwell units="Hz">8510.64</dwell>
+			<acquisitionMax units="msec">120.3</acquisitionMax>
+			<direct>
+				<transients>16</transients>
+				<filterBandwidth units="Hz">5000</filterBandwidth>
+			</direct>
+			<quadrature>
+				<type>Complex</type>
+				<sign>Varian</sign>
+			</quadrature>
+        </spectralEventDimension>
+		<spectralEventDimension>
+            <ID>dim_2</ID>
+            <spectrometerChannel>channel_2</spectrometerChannel>
+            <dwell units="Hz">3000.08</dwell>
+			<acquisitionMax units="msec">42.7</acquisitionMax>
+			<quadrature>
+				<type>States-TPPI</type>
+			</quadrature>
+        </spectralEventDimension>
+		<spectralEventDimension>
+            <ID>dim_3</ID>
+            <spectrometerChannel>channel_3</spectrometerChannel>
+            <dwell units="Hz">3000.08</dwell>
+			<acquisitionMax units="msec">42.7</acquisitionMax>
+			<quadrature>
+				<type>States-TPPI</type>
+			</quadrature>
+        </spectralEventDimension>
+    </spectralEvent>
+</CONNJUR_ML>
