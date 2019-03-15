@@ -1,0 +1,216 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" elementFormDefault="qualified"
+    vc:minVersion="1.0" vc:maxVersion="1.1">
+    <xs:annotation>
+        <xs:appinfo>CONNJUR_ML Reference Model</xs:appinfo>
+         <xs:documentation xml:lang="en">
+             CONNJUR_ML alsows NMR scientists to apply digital preservation methodologies developed in the cultural heritage sphere to be applied to complex NMR computational workflows. CONNJUR_ML achieves this by supplementing the PREMIS namespace with descriptive metadata extensions specific to NMR spectra and class wrappers to group both complete workflows and computational software lineages and dependencies.
+        </xs:documentation>
+    </xs:annotation>
+	<xs:simpleType name="spectrometerVendors">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Agilent"/>
+			<xs:enumeration value="Bruker"/>
+			<xs:enumeration value="JEOL"/>
+			<xs:enumeration value="Varian"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="nucleusType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="1H"/>
+			<xs:enumeration value="2H"/>
+			<xs:enumeration value="3H"/>
+			<xs:enumeration value="13C"/>
+			<xs:enumeration value="15N"/>
+			<xs:enumeration value="19F"/>
+			<xs:enumeration value="31P"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="quadType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="RealOnly"/>
+			<xs:enumeration value="Redfield"/>
+			<xs:enumeration value="Complex"/>
+			<xs:enumeration value="QSeq"/>
+			<xs:enumeration value="TPPI"/>
+			<xs:enumeration value="States"/>
+			<xs:enumeration value="States-TPPI"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="quadSign">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Varian"/>
+			<xs:enumeration value="Bruker"/>
+		</xs:restriction>
+	</xs:simpleType>
+    <xs:element name="CONNJUR_ML" type="CONNJUR_ComplexType"/>
+    <!--   		An instance is  (1) One or more of <spectrum>, <spectrometer>, <event>, <agent> all wrapped within a <CONNJUR_ML> container; 
+          ******************************************************************************************** *                      -->
+    <xs:complexType name="CONNJUR_ComplexType">
+        <xs:sequence>
+            <xs:element name="spectrum" type="spectrumComplexType" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="spectrometer" type="spectrometerComplexType" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="spectralEvent" type="spectralEventComplexType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="lineage" type="computationalLineage" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="spectrumComplexType">
+        <xs:sequence>
+            <xs:element name="ID" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="format" type="spectrumFormatComplexType"/>
+            <xs:element name="dimensions" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="layout" minOccurs="0" type="spectralLayoutComplexType"/>
+			<xs:element name="axes" type="xs:positiveInteger" minOccurs="0" maxOccurs="1"/> <!-- number of axes in the spectral dataset object -->
+            <xs:element name="axis" type="spectralAxisComplexType" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+	<!--
+        * Begin Spectromter information.  
+		* The spectrometer is a PREMIS agent.  It has a few key attributes. 
+		* One key attribute is the spectrometer channel which is a many to one and therefore given it's own complex type.
+	-->
+    <xs:complexType name="spectrometerComplexType">
+        <xs:sequence>
+			<xs:element name="ID" minOccurs="0" maxOccurs="unbounded"/>  <!-- local or global -->
+			<xs:element name="vendor" type="spectrometerVendors" minOccurs="0" maxOccurs="1"/>  <!-- ENUM: Example Bruker, Varian -->
+			<xs:element name="class" type="xs:string" minOccurs="0" maxOccurs="1"/>  <!-- ENUM: Example AMX, INOVA -->
+			<xs:element name="fieldStrength" type="xs:positiveInteger" minOccurs="0" maxOccurs="1"/>  <!-- Rounded to whole number: ex. 600 -->
+			<xs:element name="organization" type="xs:string" minOccurs="0" maxOccurs="1"/>  <!-- FOAF Agent -->
+			<xs:element name="channels" type="xs:positiveInteger" minOccurs="0" maxOccurs="1"/> 
+            <xs:element name="channel" type="spectralChannelComplexType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="date" type="xs:date" minOccurs="0" maxOccurs="1"/>  <!-- ISO 8601 -->
+        </xs:sequence>
+    </xs:complexType>
+	    <xs:complexType name="spectralChannelComplexType">
+        <xs:sequence>
+			<xs:element name="ID" type="xs:ID" minOccurs="1" maxOccurs="1"/>  <!-- need to consider whether this is necessary.  Can there be more than 1 13C amp? -->
+            <xs:element name="nucleus" type="nucleusType" minOccurs="0" maxOccurs="1"/>  <!-- should be isotope.  1H, 2H, 13C, 15N, etc. -->
+            <xs:element name="frequency" minOccurs="0" maxOccurs="1"/>  <!-- frequency of amplifier.  more precise than fieldStrength -->
+        </xs:sequence>
+    </xs:complexType>
+	<!--
+        * End Spectromter information.  
+	-->
+	<xs:complexType name="spectralEventComplexType">
+		<xs:sequence>
+			<xs:element name="magnetizationTransferPathway" minOccurs="0" maxOccurs="1"/> <!-- TBD -->
+			<xs:element name="pulseSequence" minOccurs="0" maxOccurs="1"/> <!-- experiment type from seqfil -->
+			<xs:element name="dimensions" type="xs:positiveInteger" minOccurs="1" maxOccurs="1"/> <!-- number of dimensions in the experimental event -->
+			<xs:element name="spectralEventDimension" type="eventDimensionComplexType" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="eventDimensionComplexType">
+		<xs:sequence>
+			<xs:element name="ID" type="xs:ID" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="spectrometerChannel" minOccurs="1" maxOccurs="1"/> 
+			<xs:element name="dwell" minOccurs="0" maxOccurs="1"/>  <!-- frequency of amplifier.  more precise than fieldStrength -->
+			<xs:element name="acquisitionMax" minOccurs="0" maxOccurs="1"/> <!-- maximum delay along dimension -->
+			<xs:element name="direct" type="eventDirectDimensionComplexType" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="quadrature" type="eventDimensionQuadratureComplexType" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="eventDirectDimensionComplexType">
+		<xs:sequence>
+			<xs:element name="transients" type="xs:positiveInteger" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="filterBandwidth" minOccurs="0" maxOccurs="1"/> 
+			</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="eventDimensionQuadratureComplexType">
+		<xs:sequence>
+			<xs:element name="type" type="quadType" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="sign" type="quadSign" minOccurs="0" maxOccurs="1"/> 
+			</xs:sequence>
+	</xs:complexType>
+	
+    <xs:complexType name="spectrumFormatComplexType">
+        <xs:sequence>
+            <xs:element name="formatName" minOccurs="1"/>   <!-- nmrPipe -->
+            <xs:element name="formatSpecification" minOccurs="0"/> <!-- URL -->
+            <xs:element name="formatByteOrder" minOccurs="0"/>
+            <xs:element name="formatNumericType" minOccurs="0"/> <!-- IEEE-float -->
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="spectralLayoutComplexType"/>
+    <xs:complexType name="spectralAxisComplexType">
+        <xs:sequence>
+			<xs:element name="ID" type="xs:ID" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="dimension" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="sweepwidth" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="points" minOccurs="1" maxOccurs="1"/> <!-- total number of pointTypes -->
+            <xs:element name="dwell" minOccurs="0" maxOccurs="1"/> <!-- dw time -->
+			<xs:element name="acquisitionMax" minOccurs="0" maxOccurs="1"/> 
+			<xs:element name="label" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="frequency" minOccurs="0" maxOccurs="unbounded"/>  <!-- more precise than fieldStrength -->
+            <xs:element name="domain" minOccurs="1" maxOccurs="1"/>   <!-- time/freq -->
+            <xs:element name="phaseShift" minOccurs="0" maxOccurs="1"/> <!-- phase shift sign convention -->
+            <xs:element name="encoding" minOccurs="0" maxOccurs="unbounded"/> 
+            <xs:element name="decoupledNucleus" minOccurs="0" maxOccurs="unbounded"/> 
+            <xs:element name="constantPhase" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="linearPhase" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="sampling" minOccurs="0" maxOccurs="1"/> <!-- uniform / nus -->
+			<xs:element name="quadrature" type="eventDimensionQuadratureComplexType" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="computationalLineage">
+		<!--Groups representations and computational dependencies that link into agents and events in the workflow -->
+        <xs:sequence>
+            <xs:element name="computationalLineageIdentifierType">
+                <xs:complexType>
+					<xs:simpleContent>
+    					<xs:extension base="xs:string">
+       						<xs:attribute name="authority" type="xs:string"/>
+        					<xs:attribute name="authorityURI" type="xs:anyURI"/>
+        					<xs:attribute name="valueURI" type="xs:anyURI"/>
+    					</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+		</xs:element>
+		<xs:element name="computationalLineageIdentifierValue" type="xs:string"/>
+		<xs:element name="computationalLineageInstantiationDate">
+   			<xs:complexType>
+        		<xs:simpleContent>
+            		<xs:extension base="xs:string">
+                		<xs:attribute name="authority" type="xs:string"/>
+            		</xs:extension>
+        		</xs:simpleContent>
+    		</xs:complexType>
+		</xs:element>
+	<xs:element name="computationalLineageCreator" type="xs:string"/>
+			<!--Repeatable allows for tagging the originator of the lineage or fork -->
+	<xs:element name="computationalLineageOrigin" type="xs:string"/>
+			<!--Instiutional or project origination/grant-->
+	<xs:element name="computationalLineageFork">
+		<!--pointer in a lineage to indicate a different lineage is a fork of the current lineage-->
+    	<xs:complexType>
+        	<xs:sequence>
+            	<xs:element name="computationalLineageForkDate" type="xs:string"/>
+            	<xs:element name="computatationlLineageForkType" type="xs:string"/>
+            	<xs:element name="computationalLineageForkSubType" type="xs:string"/>
+            	<xs:element name="computationalLineageForkValue" type="xs:string"/>
+        	</xs:sequence>
+    	</xs:complexType>
+	</xs:element>
+	<xs:element name="computationalLineageReferenceRepository">
+    	<xs:complexType>
+        	<xs:sequence>
+            	<xs:element name="computationalLineageReferenceRepositoryIndentiferType" type="xs:string"/>
+            	<xs:element name="computationalLineageReferenceRepositoryIndentiferValue" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:element>
+<xs:element name="computationalLineageLinkingExternalEventIdentifier">
+	<!--Allows linking to events at the lineage level and for bi-directional cardinality between lineages and events. Perhaps unnecessary-->
+    <xs:complexType>
+        <xs:sequence>
+            <xs:element name="computationalLineageLinkingExternalEventType" type="xs:string"/>
+            <xs:element name="computationalLineageLinkingExternalEventValue" type="xs:string"/>
+            <xs:element name="computationalLineageLinkingEmbeddedObjectType" type="xs:string"/>
+            <xs:element name="computationalLineageLinkingEmbeddedObjectValue" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:element>
+	    </xs:sequence>
+	</xs:complexType>
+</xs:schema>
